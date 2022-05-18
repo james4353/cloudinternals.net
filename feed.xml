@@ -4,13 +4,303 @@
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="https://cloudinternals.net/feed.xml" />
 <link rel="alternate" type="text/html" href="https://cloudinternals.net" />
-<updated>2022-05-18T09:22:56+01:00</updated>
+<updated>2022-05-18T09:26:05+01:00</updated>
 <id>https://cloudinternals.net/</id>
 <author>
   <name>Volkan Paksoy</name>
   <uri>https://cloudinternals.net/</uri>
   
 </author>
+
+
+<entry>
+  <title type="html"><![CDATA[Deep Dive into AWS Lambda Public URLs]]></title>
+ <link rel="alternate" type="text/html" href="https://cloudinternals.net/aws/aws-lambda-public-urls/" />
+  <id>https://cloudinternals.net/aws/aws-lambda-public-urls</id>
+  <published>2022-05-18T00:00:00+01:00</published>
+  <updated>2022-05-18T00:00:00+01:00</updated>
+  <author>
+    <name>Volkan Paksoy</name>
+    <uri>https://cloudinternals.net</uri>
+    <email></email>
+  </author>
+  <content type="html">
+    &lt;p&gt;Lambda is AWS’s Function-as-a-Service(FaaS) service that gives us a serverless and event-driven compute service. Lambda functions can play an essential role in a microservice architecture. However, it had one significant limitation until recently: You couldn’t invoke a Lambda function as an API endpoint on its own. It was only possible using other services such as Amazon API Gateway. With the recent announcement, we can now create our APIs by only using the AWS Lambda service. Let’s take a look.&lt;/p&gt;
+
+&lt;h2 id=&quot;part-1-basics&quot;&gt;Part 1: Basics&lt;/h2&gt;
+
+&lt;h3 id=&quot;create-a-new-lambda-function&quot;&gt;Create a New Lambda Function&lt;/h3&gt;
+&lt;p&gt;Let’s go ahead and create ourselves a simple Lambda function using AWS Management Console:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Go to &lt;a href=&quot;https://us-east-1.console.aws.amazon.com/lambda/&quot;&gt;Lambda Dashboard&lt;/a&gt; (In this example, I’m using us-east-1 region. If you prefer another one, switch to that region in the console)&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Click &lt;strong&gt;Functions&lt;/strong&gt; on the left pane and then &lt;strong&gt;Create function&lt;/strong&gt; button.
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/create-lambda-function-01.png&quot; alt=&quot;Create Lambda Function - Step 1&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Keep the defaults in &lt;strong&gt;Basic information&lt;/strong&gt; section.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p class=&quot;panel-note&quot;&gt;You can also expand &lt;strong&gt;Advanced settings&lt;/strong&gt; and tick &lt;strong&gt;Enable function URL&lt;/strong&gt; option but we are going to do it later in this post.&lt;/p&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;Click &lt;strong&gt;Create function&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;enable-function-url&quot;&gt;Enable Function URL&lt;/h3&gt;
+&lt;p&gt;Now that we have a function available go to &lt;strong&gt;Configuration&lt;/strong&gt; tab and click on &lt;strong&gt;Function URL&lt;/strong&gt;. Then click &lt;strong&gt;Create function URL&lt;/strong&gt; button. We’ve now come to the screen that was presented to us in the Advanced settings when we were creating the function:
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/configure-function-url.png&quot; alt=&quot;Configure function URL&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We are only trying to see a Lambda function we can call from the outside at this step. So, to keep things simple, let’s choose &lt;strong&gt;NONE&lt;/strong&gt; as Auth type.&lt;/p&gt;
+
+&lt;p&gt;Click &lt;strong&gt;Save&lt;/strong&gt; to update the settings.&lt;/p&gt;
+
+&lt;p&gt;Now we are back on the Function overview page, and we can see our newly generated URL:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/new-function-url.png&quot; alt=&quot;Function URL&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and click on that link to see the URL in action:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/simple-public-function-call-result.png&quot; alt=&quot;Simple public function call result&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;part-2-advanced-topics&quot;&gt;Part 2: Advanced Topics&lt;/h2&gt;
+&lt;p&gt;Now that we have a working publicly available API let’s dig deeper into authentication, CORS, custom domains and how this feature compares to API Gateway.&lt;/p&gt;
+
+&lt;h3 id=&quot;authentication&quot;&gt;Authentication&lt;/h3&gt;
+&lt;p&gt;In Part 1, we briefly saw there are two authentication options:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;AWS_IAM&lt;/li&gt;
+  &lt;li&gt;NONE&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;auth-type-none&quot;&gt;Auth type: NONE&lt;/h4&gt;
+&lt;p&gt;We chose NONE to keep things simple. However, even though we selected NONE, AWS still created a policy for us and added to functions permissions. We can view the created the policy in &lt;strong&gt;Permissions&lt;/strong&gt; section:&lt;/p&gt;
+
+&lt;p&gt;First, click &lt;strong&gt;Permissions&lt;/strong&gt; on the left pane.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/view-function-permissions.png&quot; alt=&quot;View permissions&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then scroll down on the right to the &lt;strong&gt;Resource-based policy&lt;/strong&gt; section and click &lt;strong&gt;View policy document&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/resource-based-policy-section.png&quot; alt=&quot;Recource-based policy section&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and you can see the policy document that allows everyone (“Principal”: “*”) to invoke the function URL (“Action”: “lambda:InvokeFunctionUrl”)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/policy-document.png&quot; alt=&quot;Policy document&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Without this permission in place, we wouldn’t be able the invoke the function. To test that, we can delete the policy statement and try the URL again:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/delete-policy-confirmation.png&quot; alt=&quot;Delete policy confirmation&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you scroll up and call the URL again, you will get a Forbidden (HTTP 403) error.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/forbidden.png&quot; alt=&quot;Forbidden&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It’s easy to put that permission back in. Click on &lt;strong&gt;Add permissions&lt;/strong&gt;. Select &lt;strong&gt;Function URL&lt;/strong&gt;. Leave the defaults (Auth type: NONE, Statement ID: FunctionURLAllowPublicAccess, Principal: *, Action: lambda:InvokeFunctionUrl) and click Save.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/add-permission.png&quot; alt=&quot;Add permission&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And if you click on the URL, you should see &lt;em&gt;“Hello from Lambda!”&lt;/em&gt; message again.&lt;/p&gt;
+
+&lt;h4 id=&quot;auth-type-aws_iam&quot;&gt;Auth type: AWS_IAM&lt;/h4&gt;
+&lt;p&gt;Now let’s consider a scenario where we don’t want our API publicly available. For example, we may choose to grant access to a specific user. This might be useful for testing a beta version internally before making it public.&lt;/p&gt;
+
+&lt;p&gt;In this example, I’ve created a new policy with lambda:InvokeFunctionUrl permission on our demo Lambda function:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/invoke-lambda-iam-policy.png&quot; alt=&quot;Invoke Lambda IAM policy&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Policy document:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2012-10-17&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Statement&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Sid&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;VisualEditor0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Effect&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Allow&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Action&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lambda:InvokeFunctionUrl&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;Resource&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;arn:aws:lambda:us-east-1::function:PublicUrlDemo&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Then, I created a user with this policy attached:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/invoke-lambda-iam-user.png&quot; alt=&quot;Invoke Lambda IAM user&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally, I went back to the Lambda function permissions and updated auth type allowing access only to this user:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/function-url-auth-type-updated.png&quot; alt=&quot;Updated auth type settings&quot; /&gt;&lt;/p&gt;
+
+&lt;p class=&quot;panel-warning&quot;&gt;
+Even though we changed the auth type to AWS_IAM in permissions, we still need to ensure the auth type is set to AWS_IAM in Function URL settings. If there is a mismatch, the console will give us a warning:
+
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/auth-type-mismatch-warning.png&quot; alt=&quot;Auth type mismatch warning&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;If we click on the URL again, we get a Forbidden error.&lt;/p&gt;
+
+&lt;p&gt;To make it work, we need to sign the request with our new IAM credentials (as in the access key and secret key we noted down when we created the user). In this example, I used Postman to enter the credentials and sign the message:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/auth-iam-signed-request.png&quot; alt=&quot;Signed request&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and we can get our response successfully:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/auth-iam-signed-request-output.png&quot; alt=&quot;Sign request output&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;pricing&quot;&gt;Pricing&lt;/h3&gt;
+&lt;p&gt;In terms of pricing, there is no extra charge for using function URLs. The cost of Lambda executions is calculated the same way whether or not they were invoked from a browser over the public Internet or a CLI inside your company network. The details of pricing can be found &lt;a href=&quot;https://aws.amazon.com/lambda/pricing/&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The duration is calculated as per the below rule:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Duration is calculated from the time your code begins executing until it returns or otherwise terminates, rounded up to the nearest 1 ms*
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This means if you implement authentication and receive unauthenticated calls, you don’t pay for those calls, which might be helpful to be charged for DDoS attacks.&lt;/p&gt;
+
+&lt;h3 id=&quot;http-methods&quot;&gt;HTTP Methods&lt;/h3&gt;
+&lt;p&gt;When you click on the function URL link on AWS Management Console, you send a GET request to the endpoint. I also used GET verb in the example above. Actually, the endpoint supports all HTTP verbs.&lt;/p&gt;
+
+&lt;p&gt;For example, if you run the curl example below and send a DELETE request, you still get the same “Hello from Lambda” response with HTTP 200 status code.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-curl&quot; data-lang=&quot;curl&quot;&gt;curl --location --request GET 'https://{ REPLACE WITH YOUR APIs SUBDOMAIN }.lambda-url.us-east-1.on.aws/' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json' \
+--data-raw ''&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I don’t think I would need to support multiple methods in my Lambda function, but it is possible to take different actions based on the HTTP method. The following NodeJS Lambda example demonstrates that:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;handler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;httpMethod&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;requestContext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;event:&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;responseMessage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;httpMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;GET&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;responseMessage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;GETting something&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;DELETE&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;responseMessage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;DELETEing something&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;nl&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;responseMessage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;doing something else&lt;/span&gt;&lt;span class=&quot;dl&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    
+    &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;statusCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;responseMessage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;paths-and-query-parameters&quot;&gt;Paths and Query Parameters&lt;/h3&gt;
+&lt;p&gt;Similar to supporting different HTTP methods, we can also access the path and query parameters and do something with them if required.&lt;/p&gt;
+
+&lt;p&gt;For example, I modified the code to handle this type of scenario:&lt;/p&gt;
+
+&lt;p&gt;Query string example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;handler&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;requestPath&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rawPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;requestQueryString&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rawQueryString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;responseData&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;requestPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;queryString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;requestQueryString&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;statusCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;responseData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Command to run:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-curl&quot; data-lang=&quot;curl&quot;&gt;curl --location --request GET 'https://{ REPLACE WITH YOUR APIs SUBDOMAIN }.lambda-url.{ REPLACE WITH YOUR REGION }.on.aws/customer/search?name=john' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json' \
+--data-raw ''&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Output:
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/query-string-response.png&quot; alt=&quot;Query string response&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;URL path example to get the details of the customer with id 123456:&lt;/p&gt;
+
+&lt;p&gt;Command to run:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-curl&quot; data-lang=&quot;curl&quot;&gt;curl --location --request GET 'https://{ REPLACE WITH YOUR APIs SUBDOMAIN }.lambda-url.{ REPLACE WITH YOUR REGION }.on.aws/customer/123456' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json' \
+--data-raw ''&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Output:
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/url-path-response.png&quot; alt=&quot;URL path response&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;lambda-function-urls-vs-amazon-api-gateway&quot;&gt;Lambda Function URLs vs Amazon API Gateway&lt;/h3&gt;
+&lt;p&gt;In the introduction section, I mentioned that we used Amazon API Gateway for public APIs before the function URLs feature. So even though the feature helps a lot for specific use cases, I think it’s worth comparing both to have more realistic expectations.&lt;/p&gt;
+
+&lt;h4 id=&quot;amazon-api-gateway-features&quot;&gt;Amazon API Gateway features&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Authentication and authorization&lt;/li&gt;
+  &lt;li&gt;Request throttling&lt;/li&gt;
+  &lt;li&gt;Usage plans and quotas&lt;/li&gt;
+  &lt;li&gt;API Keys&lt;/li&gt;
+  &lt;li&gt;AWS WAF integration&lt;/li&gt;
+  &lt;li&gt;Web socket support&lt;/li&gt;
+  &lt;li&gt;CORS support&lt;/li&gt;
+  &lt;li&gt;Built-in custom domain support&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;function-urls&quot;&gt;Function URLs&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;AWS_IAM authentication&lt;/li&gt;
+  &lt;li&gt;CORS support&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So we have lots of missing stuff in function URLs. The question is, do we need all of them for all our APIs? The chances are that a single public endpoint is good enough for many use-cases, and it costs a lot less.&lt;/p&gt;
+
+&lt;h3 id=&quot;using-function-urls-with-aliases&quot;&gt;Using Function URLs with Aliases&lt;/h3&gt;
+&lt;p&gt;We can also have different URLs for different aliases. To demonstrate this feature, I will publish the code above that returns the path and query string as a new version:&lt;/p&gt;
+
+&lt;p&gt;Switch to the &lt;strong&gt;Versions&lt;/strong&gt; tab and click &lt;strong&gt;Publish new version&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;In the dialog box, give a meaningful description and click &lt;strong&gt;Publish&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/create-new-version.png&quot; alt=&quot;Create new version&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then switch to the &lt;strong&gt;Aliases&lt;/strong&gt; tab, create an alias, and click &lt;strong&gt;Save&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/create-new-alias.png&quot; alt=&quot;Create new alias&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now you can create a new function URL for this alias. While inside the new alias, click on &lt;strong&gt;Create function URL&lt;/strong&gt; button and follow the same steps you did with the main function (with NONE as authentication type).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/create-url-for-alias.png&quot; alt=&quot;Create new URL for alias&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you go to the alias function URL section now, you should be able to see the new URL, which is entirely different from the main function URL (which points to $LATEST version automatically):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/alias-url.png&quot; alt=&quot;New URL for alias&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cors&quot;&gt;CORS&lt;/h3&gt;
+&lt;p&gt;You can also enable CORS to restrict where your API can be consumed. For example, you can set your domain where your frontend lives and only accept POST requests:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/cors-settings.png&quot; alt=&quot;CORS settings&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;part-3-clean-up&quot;&gt;Part 3: Clean Up&lt;/h2&gt;
+&lt;p&gt;If you followed the steps of this post, you might want to clean up the resources you created. You can do so by following the steps below:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Delete the Lambda function (PublicUrlDemo)&lt;/li&gt;
+  &lt;li&gt;Delete IAM policy (lambda-invoke-function-url-policy)&lt;/li&gt;
+  &lt;li&gt;Delete IAM user (lambda-invoke-function-url-demo-user)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;I needed a simple API to carry out a simple task on multiple occasions. My go-to service was always Lambda, but the Lambda function could only be called from within AWS services or command line using authenticated users was a deal-breaker in most scenarios. Now that we have the ability to develop APIs that can be invoked from anywhere is a significant improvement on the server overall.&lt;/p&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;Resources&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://aws.amazon.com/blogs/aws/announcing-aws-lambda-function-urls-built-in-https-endpoints-for-single-function-microservices/&quot;&gt;Announcing AWS Lambda Function URLs: Built-in HTTPS Endpoints for Single-Function Microservices&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html&quot;&gt;AWS documentation: Lambda function URLs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://aws.amazon.com/lambda/pricing/&quot;&gt;AWS Lambda Pricing&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+    &lt;p&gt;&lt;a href=&quot;https://cloudinternals.net/aws/aws-lambda-public-urls/&quot;&gt;Deep Dive into AWS Lambda Public URLs&lt;/a&gt; was originally published by Volkan Paksoy at &lt;a href=&quot;https://cloudinternals.net&quot;&gt;Cloud Internals&lt;/a&gt; on May 18, 2022.&lt;/p&gt;
+  </content>
+</entry>
 
 
 <entry>
