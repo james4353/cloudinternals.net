@@ -4,7 +4,7 @@
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="https://cloudinternals.net/feed.xml" />
 <link rel="alternate" type="text/html" href="https://cloudinternals.net" />
-<updated>2022-05-19T08:02:26+01:00</updated>
+<updated>2022-05-21T09:03:29+01:00</updated>
 <id>https://cloudinternals.net/</id>
 <author>
   <name>Volkan Paksoy</name>
@@ -25,7 +25,9 @@
     <email></email>
   </author>
   <content type="html">
-    &lt;p&gt;Lambda is AWS’s Function-as-a-Service(FaaS) service that gives us a serverless and event-driven compute service. Lambda functions can play an essential role in a microservice architecture. However, it had one significant limitation until recently: You couldn’t invoke a Lambda function as an API endpoint on its own. It was only possible using other services such as Amazon API Gateway. With the recent announcement, we can now create our APIs by only using the AWS Lambda service. Let’s take a look.&lt;/p&gt;
+    &lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/05/aws-lambda-public-urls/header.png&quot; alt=&quot;Function URL&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Lambda is AWS’s Function-as-a-Service(FaaS) service that gives us a serverless and event-driven compute service. Lambda functions can play an essential role in a microservice architecture. However, it had one significant limitation until recently: You couldn’t invoke a Lambda function as an API endpoint on its own. It was only possible using other services such as Amazon API Gateway. With the recent announcement, we can now create our APIs by only using the AWS Lambda service. Let’s take a look.&lt;/p&gt;
 
 &lt;h2 id=&quot;part-1-basics&quot;&gt;Part 1: Basics&lt;/h2&gt;
 
