@@ -4,13 +4,151 @@
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="https://cloudinternals.net/feed.xml" />
 <link rel="alternate" type="text/html" href="https://cloudinternals.net" />
-<updated>2022-06-07T11:22:50+01:00</updated>
+<updated>2022-06-07T11:27:27+01:00</updated>
 <id>https://cloudinternals.net/</id>
 <author>
   <name>Volkan Paksoy</name>
   <uri>https://cloudinternals.net/</uri>
   
 </author>
+
+
+<entry>
+  <title type="html"><![CDATA[Start a WordPress Blog on Linode in Less Than 30 minutes]]></title>
+ <link rel="alternate" type="text/html" href="https://cloudinternals.net/tutorial/start-a-wordpress-blog-on-linode-in-less-than-30-minutes/" />
+  <id>https://cloudinternals.net/tutorial/start-a-wordpress-blog-on-linode-in-less-than-30-minutes</id>
+  <published>2022-06-07T00:00:00+01:00</published>
+  <updated>2022-06-07T00:00:00+01:00</updated>
+  <author>
+    <name>Volkan Paksoy</name>
+    <uri>https://cloudinternals.net</uri>
+    <email></email>
+  </author>
+  <content type="html">
+    &lt;p&gt;Linode is one of the popular and reputable cloud computing providers. In this post, we are going to look into the process of creating a Linode account and setting up WordPress blog up and running in less than 30 minutes.&lt;/p&gt;
+
+&lt;h2 start=&quot;1&quot; id=&quot;create-a-new-linode-account&quot;&gt;Create a new Linode Account&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;Go to &lt;a href=&quot;https://linode.com&quot;&gt;Linode website&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;At the time of this writing, there was a $50 promotion for new users which I took advantage of. 
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/01-linode-front-page.png&quot; alt=&quot;linode front page&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Click the sign up method. I like using individual accounts so I’d recommend signing up with email.&lt;/p&gt;
+
+&lt;ol start=&quot;2&quot;&gt;
+  &lt;li&gt;Enter your email and pick a strong password
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/02-create-linode-account-step-01.png&quot; alt=&quot;create Linode account - step 1&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;Enter your billing information. 
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/03-create-linode-account-step-02.png&quot; alt=&quot;create Linode account - step 2&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Unfortunately, they don’t have PayPal support so you’ll need to have a valid credit or debit card ready to proceed.&lt;/p&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;Submit application 
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/04-create-linode-account-step-03.png&quot; alt=&quot;create Linode account - step 3&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;At this point, you have to wait for a confirmation email from Linode. In my experience, it took about 10 minutes to receive the email.&lt;/p&gt;
+
+&lt;p&gt;After you’ve received the email, log in again or just refresh the page if you’re still on it. You should be able to see the dashboard:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/05-linode-account-overview.png&quot; alt=&quot;Linode dashboard&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So far, it’s empty and we’re about to change that!&lt;/p&gt;
+
+&lt;h2 id=&quot;set-up-wordpress&quot;&gt;Set up WordPress&lt;/h2&gt;
+&lt;p&gt;Linode has a marketplace full of applications that you can easily install.&lt;/p&gt;
+
+&lt;ol start=&quot;1&quot;&gt;
+  &lt;li&gt;First, click Create then Marketplace.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/06-linode-marketplace.png&quot; alt=&quot;Linode marketplace&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;2&quot;&gt;
+  &lt;li&gt;WordPress is probably the world’s most popular CMS so it’s not a surprise to see it on the top of the list. Click on WordPress in the list:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/07-marketplace-wordpress.png&quot; alt=&quot;Wordpress in Linode marketplace&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;Next you provide some basic WordPress settings such as admin password, MySQL db passwords etc:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/08-wordpress-options.png&quot; alt=&quot;WordPress options&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;Select an OS image the WordPress installation will be built on:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/09-wordpress-image.png&quot; alt=&quot;Image selection&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;Next select the region. Ideally this should be closest to your target audience to reduce network latency:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/10-region-selection.png&quot; alt=&quot;Image selection&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;5&quot;&gt;
+  &lt;li&gt;Next step is to choose the plan. This is important as it has direct impact on the performance of your blog.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/11-plan-selection.png&quot; alt=&quot;Image selection&quot; /&gt;&lt;/p&gt;
+
+&lt;p class=&quot;panel-note&quot;&gt;
+Even though it’s an important decision, you can resize your Linode later on so you don’t have to worry about it too much at this point. To resize, go to dashboard. Click … button next to your Linode and select Resize.
+
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/12-resize.png&quot; alt=&quot;Resize Linode&quot; /&gt;
+&lt;/p&gt;
+
+&lt;ol start=&quot;6&quot;&gt;
+  &lt;li&gt;Complete the remaining optional settings and click Create Linode button at the bottom of the page.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p class=&quot;panel-note top-padding&quot;&gt;It takes about 2-5 minutes for the WordPress installation to complete.&lt;/p&gt;
+
+&lt;h2 id=&quot;dns-setup&quot;&gt;DNS Setup&lt;/h2&gt;
+&lt;p&gt;After the setup has been completed, you will be able to see the IP address allocated for your blog:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/13-wordpress-on-dashboard.png&quot; alt=&quot;WordPress on dashboard&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Go to your DNS provider and add an A record pointing to that IP address. If you provided a subdomain during the setup than you will have to add the A record for that subdomain. In my case, I use Route53 so my setup looked like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/14-dns-setting.png&quot; alt=&quot;A record in DNS settings&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;test-your-blog&quot;&gt;Test Your Blog&lt;/h2&gt;
+&lt;p&gt;After you’ve updated your DNS. you can test your WordPress blog. Just visit your domain/subdomain and you should be able to see a vanilla WordPress installation:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/15-wordpress-default-output.png&quot; alt=&quot;Wordpress default output&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And to manage your blog, go to /wp-admin page and it should look like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/16-wordpress-admin-page.png&quot; alt=&quot;Wordpress admin page&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;credit-expiry-warning&quot;&gt;Credit Expiry Warning&lt;/h2&gt;
+&lt;p class=&quot;panel-warning&quot;&gt;
+One quick warning regarding the credits: Even if you receive $50 credit, don’t assume that you can pick a $5 plan and have your blog for 10 months free. The credit expires after 60 days from redemption so be careful about not getting unexpected charges after 60 days:
+
+&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/linode-wordpress/17-credit-expiry-warning.png&quot; alt=&quot;Credit expiry warning&quot; /&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;In this post, we looked into creating a new Linode account and setting up a WordPress blog from start to finish. If you would like to have a blog post in the next 30 minutes, you can easily follow through and get it up and running.&lt;/p&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;Resources&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.linode.com/docs/products/tools/marketplace/guides/wordpress/&quot;&gt;Guides - Deploying WordPress through the Linode Marketplace&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+    &lt;p&gt;&lt;a href=&quot;https://cloudinternals.net/tutorial/start-a-wordpress-blog-on-linode-in-less-than-30-minutes/&quot;&gt;Start a WordPress Blog on Linode in Less Than 30 minutes&lt;/a&gt; was originally published by Volkan Paksoy at &lt;a href=&quot;https://cloudinternals.net&quot;&gt;Cloud Internals&lt;/a&gt; on June 07, 2022.&lt;/p&gt;
+  </content>
+</entry>
 
 
 <entry>
