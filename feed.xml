@@ -4,7 +4,7 @@
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="https://cloudinternals.net/feed.xml" />
 <link rel="alternate" type="text/html" href="https://cloudinternals.net" />
-<updated>2022-06-08T05:57:24+01:00</updated>
+<updated>2022-06-08T07:49:55+01:00</updated>
 <id>https://cloudinternals.net/</id>
 <author>
   <name>Volkan Paksoy</name>
@@ -27,9 +27,13 @@
   <content type="html">
     &lt;p&gt;Linode is one of the popular and reputable cloud computing providers. In this post, we are going to look into the process of creating a Linode account and setting up WordPress blog up and running in less than 30 minutes.&lt;/p&gt;
 
+&lt;p class=&quot;panel-note&quot;&gt;
+Disclosure of earnings: we use affiliate links in some of the hosting services that appear on this page. This helps our site cover the costs of the site, Thanks for your support. &lt;a href=&quot;https://cloudinternals.net/affiliate-disclosure&quot;&gt;Read more&lt;/a&gt;
+&lt;/p&gt;
+
 &lt;h2 start=&quot;1&quot; id=&quot;create-a-new-linode-account&quot;&gt;Create a new Linode Account&lt;/h2&gt;
 &lt;ol&gt;
-  &lt;li&gt;Go to &lt;a href=&quot;https://linode.com&quot;&gt;Linode website&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Go to &lt;a href=&quot;https://linode.gvw92c.net/qnXKAg&quot;&gt;Linode website&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;At the time of this writing, there was a $50 promotion for new users which I took advantage of. 
@@ -143,6 +147,7 @@ One quick warning regarding the credits: Even if you receive $50 credit, don’t
 
 &lt;h2 id=&quot;resources&quot;&gt;Resources&lt;/h2&gt;
 &lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://linode.gvw92c.net/qnXKAg&quot;&gt;Linode&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://www.linode.com/docs/products/tools/marketplace/guides/wordpress/&quot;&gt;Guides - Deploying WordPress through the Linode Marketplace&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
