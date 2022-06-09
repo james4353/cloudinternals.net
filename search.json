@@ -1,6 +1,14 @@
 [
   
     {
+      "title"    : "How to host a Wordpress website on AWS using Amazon Lightsail",
+      "category" : "",
+      "tags"     : "wordpress, lightsail",
+      "url"      : "https://cloudinternals.net/aws/how-to-host-a-wordpress-website-on-aws-using-amazon-lightsail/",
+      "date"     : "2022-06-09 00:00:00 +0100"
+    } ,
+  
+    {
       "title"    : "Start a WordPress Blog on Linode in Less Than 30 minutes",
       "category" : "",
       "tags"     : "wordpress, linode",

@@ -4,13 +4,253 @@
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="https://cloudinternals.net/feed.xml" />
 <link rel="alternate" type="text/html" href="https://cloudinternals.net" />
-<updated>2022-06-08T07:58:59+01:00</updated>
+<updated>2022-06-09T11:35:35+01:00</updated>
 <id>https://cloudinternals.net/</id>
 <author>
   <name>Volkan Paksoy</name>
   <uri>https://cloudinternals.net/</uri>
   
 </author>
+
+
+<entry>
+  <title type="html"><![CDATA[How to host a Wordpress website on AWS using Amazon Lightsail]]></title>
+ <link rel="alternate" type="text/html" href="https://cloudinternals.net/aws/how-to-host-a-wordpress-website-on-aws-using-amazon-lightsail/" />
+  <id>https://cloudinternals.net/aws/how-to-host-a-wordpress-website-on-aws-using-amazon-lightsail</id>
+  <published>2022-06-09T00:00:00+01:00</published>
+  <updated>2022-06-09T00:00:00+01:00</updated>
+  <author>
+    <name>Volkan Paksoy</name>
+    <uri>https://cloudinternals.net</uri>
+    <email></email>
+  </author>
+  <content type="html">
+    &lt;p&gt;AWS offers multiple ways of running applications. One of the most versatile services is EC2 which is where you can create virtual machines. The thing about EC2 is they may be overwhelming for simple use cases. For common use cases such as creating a basic virtual machine and starting a WordPress website you might want to have a simpler alternative. Amazon Lightsail is intented to simplify achieving such basic goals.&lt;/p&gt;
+
+&lt;p&gt;In this post, we are going to look into creating a new WordPress website with Amazon Lightsail.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-amazon-lightsail&quot;&gt;What is Amazon Lightsail?&lt;/h2&gt;
+&lt;p&gt;AWS services are generally like LEGO bricks. You can mix and match them to build complex infrastructure. This comes at a cost though. Sometimes all you need is a pre-packaged simple solution to achieve a simple task. There are some hosting providers out there that offer virtual private servers (VPS) with one-click application deployments such as Linode and  Digital Ocean. Amazon Lightsail is AWS’s solution offered to this market.&lt;/p&gt;
+
+&lt;p&gt;It was announced in 2016. Unlike an EC2 instance, you don’t select individual components of a server. You rather select a pricing plan which includes a pre-packaged server with a configuration proportional to the pricing. This alone simplifies a lot of tasks that might be daunting to people who are not tech-savvy and just want to get a site up and running as fast as they possibly can.&lt;/p&gt;
+
+&lt;p&gt;Without further ado, let’s take a look how Lightsail works.&lt;/p&gt;
+
+&lt;h2 id=&quot;getting-started&quot;&gt;Getting Started&lt;/h2&gt;
+&lt;p&gt;When you visit &lt;a href=&quot;https://lightsail.aws.amazon.com/&quot;&gt;Amazon Lightsail Dashboard&lt;/a&gt; first thing you notice is that it’s quite different than a regular AWS service:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/01-lightsail-dashboard.png&quot; alt=&quot;Amazon Lightsail dashboard&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It might take some time getting used to the this UI but fortunately it’s quite intuitive so getting everything set up should not be too much of a hassle.&lt;/p&gt;
+
+&lt;p&gt;Let’s get started with our WordPress site:&lt;/p&gt;
+
+&lt;ol start=&quot;1&quot;&gt;
+  &lt;li&gt;In the dashboard, Click Create Instance button in the middle of the screen.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/02-create-instance-button.png&quot; alt=&quot;Create instance button&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;2&quot;&gt;
+  &lt;li&gt;First thing you need to do is to approve or change the Instance location. The closest region to your location is pre-selected.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/03-change-az-button.png&quot; alt=&quot;Change availability zone button&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When choosing the instance location, be mindful about your target audience. Being close to your users will reduce the network latency and will make a better experience for your users.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/04-select-az.png&quot; alt=&quot;Select availability zone&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;Next, you pick your operating system image.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/05-select-os.png&quot; alt=&quot;Select operating system image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In terms of both price and performance, I’d strongly recommend choosing Linux/Unix as your platform which is what we’ll be selecting in this article.&lt;/p&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;Now it’s time to select WordPress which is already the first item in the list and selected. WordPress is such a popular application that it’s always the first one in such lists.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p class=&quot;panel-tip top-padding&quot;&gt;
+&lt;span style=&quot;color:green; font-size: 1.15em&quot;&gt;&lt;strong&gt;Quick Trivia&lt;/strong&gt;&lt;/span&gt;&lt;br /&gt;
+According to &lt;a href=&quot;https://w3techs.com/technologies/details/cm-wordpress&quot;&gt;Web technology Surveys&lt;/a&gt;, WordPress is used by 43% of all websites on the Internet.
+&lt;/p&gt;
+
+&lt;p&gt;If you intend to host multiple websites, you can also choose &lt;strong&gt;WordPress Multisite&lt;/strong&gt; option which is the second option in the list.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/06-select-application.png&quot; alt=&quot;Select application&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;5&quot;&gt;
+  &lt;li&gt;Now it’s time to select the pricing plan. You don’t have to worry about the little details fo the instance. You just pick the plan closest to your budget.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/07-select-instance-plan.png&quot; alt=&quot;Select instance plan&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;At the time of this writing, first 3 months of the first 3 plans ($3.5, $5 and $10 plans) were free. This is good opportunity to try out a new WordPress website for free and make a decision about going forward afterwards.&lt;/p&gt;
+
+&lt;p&gt;On this article, we are going to proceed with the $5 plan.&lt;/p&gt;
+
+&lt;p&gt;Click $5 plan&lt;/p&gt;
+
+&lt;ol start=&quot;5&quot;&gt;
+  &lt;li&gt;Give your instance a unique and memorable name to identify your website&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/08-change-instance-name.png&quot; alt=&quot;Change instance name&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;6&quot;&gt;
+  &lt;li&gt;Click Create Instance button at the bottom of the screen. You should be redirected to the instances dashboard and view the status of the instance.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/09-new-instance-status.png&quot; alt=&quot;New instance status&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In about 2-3 minutes, the instance should be up and running:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/10-new-instance-running.png&quot; alt=&quot;New instance running&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;7&quot;&gt;
+  &lt;li&gt;Test installation. Visit the IP address allocated to your website and you should see a default WordPress installation:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/11-wordpress-default-home-page.png&quot; alt=&quot;WordPress default home page&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Add /wp-admin to the IP and you should be able to see the WordPress login page:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/12-wordpress-admin-login-page.png&quot; alt=&quot;WordPress login page&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Congratulations! Your website is up and running! 🎉🎊🍾&lt;/p&gt;
+
+&lt;h2 id=&quot;configuring-wordpress&quot;&gt;Configuring WordPress&lt;/h2&gt;
+&lt;p&gt;Now that you have a freshly installed WordPress instance, it’s time to configure and add content. As you went through the steps in the installation process you must have noticed that you didn’t provide a username and password to login to your instance. So finding out the username and password is our next step.&lt;/p&gt;
+
+&lt;ol start=&quot;1&quot;&gt;
+  &lt;li&gt;In the Use your browser section, Click Connect using SSH button&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/13-connect-using-ssh-button.png&quot; alt=&quot;Connect using SSH button&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;2&quot;&gt;
+  &lt;li&gt;You should end up in an SSH terminal in a new tab:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/14-ssh-terminal.png&quot; alt=&quot;SSH terminal&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;In the terminal, run the following command:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;bitnami_application_password
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This should simply print the default administrator password:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/15-default-password-in-the-termnial.png&quot; alt=&quot;Default password in the terminal&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Copy the password shown in the terminal&lt;/p&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;In a new tab, go to https://{your public IP address}/wp-admin&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ol start=&quot;5&quot;&gt;
+  &lt;li&gt;Use the “user” as default user and the password you previously copied from the terminal to log in to your WordPress dashboard.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/16-log-in-to-admin-dashboard.png&quot; alt=&quot;Default password in the terminal&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You should end up seeing something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/17-wordpress-dashboard.png&quot; alt=&quot;Default password in the terminal&quot; /&gt;&lt;/p&gt;
+
+&lt;p class=&quot;panel-note&quot;&gt;
+At the time of this writing, the installed WordPress version was 5.9.3 but a major version upgrade (6.0) was available. As upgrading WordPress is outside the scope of this article, we are not going to cover it. But please keep in mind that it’s a good practice to keep your WordPress installation and all the plugins up-to-date. 
+&lt;/p&gt;
+
+&lt;h2 id=&quot;set-up-static-ip-address-and-custom-domain&quot;&gt;Set up Static IP Address and Custom Domain&lt;/h2&gt;
+&lt;p&gt;Now we have a fully-fledged WordPress site but we still have 2 problems:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;We can’t give our users an ugly-looking IP address&lt;/li&gt;
+  &lt;li&gt;The default IP address is a dynamic one and it will change every time your instance is stopped and started again.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;To address both issues, first we need to set up a static IP address and point a domain or subdomain to that IP address.&lt;/p&gt;
+
+&lt;h3 id=&quot;ip-address&quot;&gt;IP Address&lt;/h3&gt;
+
+&lt;ol start=&quot;1&quot;&gt;
+  &lt;li&gt;Go to Lightsail networking page: &lt;a href=&quot;https://lightsail.aws.amazon.com/ls/webapp/home/networking&quot;&gt;Lightsail Networking&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;It should look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/18-networking-tab.png&quot; alt=&quot;Netowrking tab&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Click Create Static IP button.&lt;/p&gt;
+
+&lt;ol start=&quot;2&quot;&gt;
+  &lt;li&gt;In the Attach to an instance section, select your instance from the list:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/19-select-instance-to-attach-ip-to.png&quot; alt=&quot;Select instance to attache ip to&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;Give it a meaningful name and click Create&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/20-rename-ip-address-and-create.png&quot; alt=&quot;Rename IP address and click create&quot; /&gt;&lt;/p&gt;
+
+&lt;p class=&quot;panel-warning&quot;&gt;
+Up to 5 static IP addresses are free of charge, ONLY when they are attached to an instance. So be mindful of releasing them when not in use.
+&lt;/p&gt;
+
+&lt;ol start=&quot;4&quot;&gt;
+  &lt;li&gt;This should take you to the IP address details and it should show that it’s been assigned to your instance:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/21-static-ip-attached-to-the-instance.png&quot; alt=&quot;Static IP attached to the instance&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;5&quot;&gt;
+  &lt;li&gt;Test your blog again by visiting the IP address and you should still see the blog running.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;custom-domain&quot;&gt;Custom Domain&lt;/h3&gt;
+
+&lt;p&gt;Once you have your static IP address, it’s fairly straightforward to point your domain/subdomain. It completely depends on your DNS provider. In this example, I’m going to assume your domain is already registered and hosted on Amazon Route53.&lt;/p&gt;
+
+&lt;ol start=&quot;1&quot;&gt;
+  &lt;li&gt;Go to your hosted zone in Amazon Route53 and click Create record:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/22-create-record-in-amazon-route53-hosted-zone.png&quot; alt=&quot;Create record in Amazon Route53 hosted zone&quot; /&gt;&lt;/p&gt;
+
+&lt;ol start=&quot;2&quot;&gt;
+  &lt;li&gt;Enter your subdomain in Record name (or leave blank if you’re going to point root domain)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/22-enter-record-details-and-click-create-records.png&quot; alt=&quot;Enter record details and click create records&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Make sure the record type is A.&lt;/p&gt;
+
+&lt;ol start=&quot;3&quot;&gt;
+  &lt;li&gt;It may take a few minutes for the DNS records to propagate. After a while when you visit your domain/subdomain, you should still your blog:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://cloudinternals.net/images/posts/2022/06/wordpress-using-lightsail/23-test-domain-with-custom-domain.png&quot; alt=&quot;Test blog with the custom domain&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;This article covers the origins of Amazon Lightsail service and how it compares to Amazon EC2. It covers setting up a new WordPress instance from scratch and shows setting up an IP address and pointing a domain to the new blog.&lt;/p&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;Resources&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://aws.amazon.com/lightsail/&quot;&gt;Amazon Lightsail Official Page&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+    &lt;p&gt;&lt;a href=&quot;https://cloudinternals.net/aws/how-to-host-a-wordpress-website-on-aws-using-amazon-lightsail/&quot;&gt;How to host a Wordpress website on AWS using Amazon Lightsail&lt;/a&gt; was originally published by Volkan Paksoy at &lt;a href=&quot;https://cloudinternals.net&quot;&gt;Cloud Internals&lt;/a&gt; on June 09, 2022.&lt;/p&gt;
+  </content>
+</entry>
 
 
 <entry>
